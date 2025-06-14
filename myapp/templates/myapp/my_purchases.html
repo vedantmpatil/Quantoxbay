@@ -1,0 +1,41 @@
+{% extends 'myapp/base.html' %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <h1 class="text-3xl font-bold text-gray-900 mb-8">My Purchases</h1>
+
+    {% if orders %}
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        {% for order in orders %}
+        <div class="bg-white shadow-md rounded-xl overflow-hidden hover:shadow-lg transition">
+            <a href="{% url 'detail' order.product.id %}" class="block">
+                <div class="h-48 bg-gray-100 flex items-center justify-center">
+                    {% if order.product.thumbnail %}
+                        <img src="{{ order.product.thumbnail.url }}" alt="{{ order.product.title }}" class="h-full w-full object-cover">
+                    {% else %}
+                        <span class="text-gray-500">No Image</span>
+                    {% endif %}
+                </div>
+                <div class="p-4 space-y-2">
+                    <h2 class="text-lg font-semibold text-gray-800 hover:text-blue-600">{{ order.product.title }}</h2>
+                </div>
+            
+            <div class="px-4 pb-4 space-y-2">
+                <p class="text-sm text-gray-600">Purchased on {{ order.created_on|date:"M d, Y" }}</p>
+                <p class="text-sm text-gray-600">Amount Paid : ${{ order.amount }}</p>
+                <p class="text-sm text-gray-600">Sold By : {{ order.product.seller.username }}</p>
+                <p class="text-sm text-gray-500">File: {{ order.product.file_type|upper }} ({{ order.product.file_size }})</p>
+                <a href="{{ order.product.file.url }}" download class="inline-block mt-3 px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 transition">
+                    Download File
+                </a>
+            </div>
+            </a>
+        </div>
+        
+        {% endfor %}
+    </div>
+    {% else %}
+    <p class="text-gray-600">You have not purchased any products yet.</p>
+    {% endif %}
+</div>
+{% endblock %}

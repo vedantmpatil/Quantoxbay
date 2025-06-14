@@ -1,0 +1,157 @@
+{% extends "myapp/base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+  <!-- Title Section -->
+  <div class="mb-12 text-center">
+    <h1 class="text-4xl sm:text-5xl font-extrabold tracking-tight text-gray-900 dark:text-white mb-4">
+      {{ product.title }}
+    </h1>
+    <div class="mx-auto w-24 h-1 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 rounded-full mb-4"></div>
+    <p class="text-sm text-gray-500 dark:text-gray-400">
+      {{ product.file_type|upper }} • {{ product.file_size }} • Updated {{ product.updated_at|date:"M d, Y" }}
+    </p>
+  </div>
+
+  <!-- Main Grid -->
+  <div
+    class="grid grid-cols-1 md:grid-cols-2 gap-10 items-start bg-white dark:bg-gray-900 rounded-3xl p-6 shadow-xl ring-1 ring-gray-200 dark:ring-gray-800">
+
+    <!-- Thumbnail -->
+    <div class="rounded-xl overflow-hidden shadow-md">
+      {% if product.thumbnail %}
+      <img src="{{ product.thumbnail.url }}" alt="{{ product.title }}"
+        class="w-full h-72 sm:h-96 object-cover object-center rounded-xl">
+      {% else %}
+      <div class="w-full h-72 sm:h-96 bg-gray-200 dark:bg-gray-700 flex items-center justify-center text-gray-500">
+        No Image Available
+      </div>
+      {% endif %}
+    </div>
+
+    <!-- Product Info -->
+    <div class="space-y-6 flex flex-col justify-between">
+
+      {% if product.discount_price %}
+      <div class="text-3xl font-bold text-green-600 dark:text-green-400">
+        ${{ product.discount_price }}
+        <span class="line-through text-gray-400 text-lg ml-2">${{ product.price }}</span>
+      </div>
+      {% else %}
+      <div class="text-3xl font-bold text-gray-900 dark:text-white">
+        ${{ product.price }}
+      </div>
+      {% endif %}
+
+      {% if tags %}
+      <div class="flex flex-wrap gap-2">
+        {% for tag in tags %}
+        <span
+          class="bg-indigo-100 dark:bg-indigo-700 text-indigo-700 dark:text-white text-xs font-medium px-3 py-1 rounded-full shadow-sm">
+          #{{ tag }}
+        </span>
+        {% endfor %}
+      </div>
+      {% endif %}
+
+      <div>
+        <h2 class="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-2">Description</h2>
+        <p class="text-gray-700 dark:text-gray-300 leading-relaxed text-sm sm:text-base">
+          {{ product.description }}
+        </p>
+      </div>
+      <div>
+        <h2 class="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-2">Seller Information</h2>
+        <p class="text-gray-700 dark:text-gray-300 leading-relaxed text-sm sm:text-base">
+          {{ product.seller.first_name }}
+        </p>
+      </div>
+
+      {% if product.preview_url %}
+      <div>
+        <a href="{{ product.preview_url }}" target="_blank"
+          class="inline-flex items-center text-sm font-medium text-indigo-600 dark:text-indigo-400 hover:underline">
+          ▶ Live Preview
+        </a>
+      </div>
+      {% endif %}
+
+      <!-- Buy Button (Stripe) -->
+      <div class="pt-2">
+        <button id="checkout-button"
+          class="inline-flex items-center justify-center px-6 py-3 text-sm font-semibold text-white bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 rounded-xl shadow-lg transition focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500">
+          <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"
+            stroke-linecap="round" stroke-linejoin="round">
+            <path d="M5 13l4 4L19 7" />
+          </svg>
+          Buy Now
+        </button>
+      </div>
+
+      <!-- Hidden Email for JS -->
+      <div id="myemail" hidden>{{ request.user.email }}</div>
+
+      {% if request.user == product.seller %}
+      <div class="flex gap-4 pt-4">
+        <a href="{% url 'edit_product' product.id %}"
+          class="px-4 py-2 text-sm font-semibold text-white bg-blue-600 hover:bg-blue-700 rounded-xl shadow transition">
+          ✏️ Edit
+        </a>
+        <form action="{% url 'delete_product' product.id %}" method="POST" onsubmit="return confirm('Are you sure?')">
+          {% csrf_token %}
+          <button type="submit"
+            class="px-4 py-2 text-sm font-semibold text-white bg-red-600 hover:bg-red-700 rounded-xl shadow transition">
+            🗑️ Delete
+          </button>
+        </form>
+      </div>
+      {% endif %}
+
+
+    </div>
+  </div>
+</div>
+
+
+<!-- Stripe.js -->
+<script src="https://js.stripe.com/v3/"></script>
+
+<script type="text/javascript">
+  document.addEventListener("DOMContentLoaded", function () {
+    const stripe = Stripe("{{ STRIPE_PUBLISHABLE_KEY }}");
+    const checkoutButton = document.getElementById("checkout-button");
+    const emailDiv = document.getElementById("myemail");
+    const email = emailDiv ? emailDiv.innerText.trim() : "";
+
+    checkoutButton.addEventListener("click", function () {
+      if (!email || !email.includes("@")) {
+        alert("Please login or provide a valid email.");
+        return;
+      }
+
+      fetch("{% url 'create_checkout_session' product.id %}", {
+        method: "POST",
+        body: JSON.stringify({ email: email })
+      })
+        .then(response => response.json())
+        .then(session => {
+          if (session.sessionId) {
+            return stripe.redirectToCheckout({ sessionId: session.sessionId });
+          } else {
+            alert("Failed to create checkout session.");
+          }
+        })
+        .then(result => {
+          if (result && result.error) {
+            alert(result.error.message);
+          }
+        })
+        .catch(error => {
+          console.error("Error:", error);
+          alert("Something went wrong during checkout.");
+        });
+    });
+  });
+</script>
+{% endblock %}

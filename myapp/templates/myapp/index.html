@@ -1,0 +1,70 @@
+{% extends "myapp/base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+  <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white mb-6">
+    Explore Products
+  </h1>
+
+  <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
+    {% for product in products %}
+    <div class="bg-white dark:bg-gray-800 shadow-md rounded-xl overflow-hidden transition hover:shadow-lg">
+      
+      <!-- Thumbnail -->
+      {% if product.thumbnail %}
+        <img src="{{ product.thumbnail.url }}" alt="{{ product.title }}"
+             class="w-full h-44 sm:h-48 object-cover object-center" />
+      {% else %}
+        <div class="w-full h-44 sm:h-48 bg-gray-200 dark:bg-gray-700 flex items-center justify-center text-gray-500">
+          No Image
+        </div>
+      {% endif %}
+
+      <!-- Content -->
+      <div class="p-4">
+        
+        <!-- Title -->
+        <h2 class="text-base sm:text-lg font-semibold text-gray-800 dark:text-white truncate" title="{{ product.title }}">
+          {{ product.title }}
+        </h2>
+
+        <!-- File Info -->
+        <p class="text-xs text-gray-500 dark:text-gray-300 mt-1 mb-2">
+          {{ product.file_type|upper }} • {{ product.file_size }}
+        </p>
+
+        <!-- Pricing -->
+        {% if product.discount_price %}
+        <div class="text-sm sm:text-base font-medium text-green-600 dark:text-green-400">
+          ${{ product.discount_price }}
+          <span class="line-through text-xs sm:text-sm text-gray-400 ml-1">${{ product.price }}</span>
+        </div>
+        {% else %}
+        <div class="text-sm sm:text-base font-medium text-gray-900 dark:text-white">
+          ${{ product.price }}
+        </div>
+        {% endif %}
+
+        <!-- View Details Button -->
+        <a href="{% url 'detail' product.id %}"
+           class="inline-flex items-center justify-center w-full px-4 py-2 mt-4 text-sm font-medium text-white bg-gradient-to-r from-indigo-600 to-purple-600 rounded-lg shadow-md hover:from-indigo-700 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition">
+           View Details →
+        </a>
+
+        <!-- Optional Preview -->
+        {% if product.preview_url %}
+        <a href="{{ product.preview_url }}" target="_blank"
+           class="inline-block mt-3 text-sm text-indigo-600 dark:text-indigo-400 hover:underline">
+          Live Preview →
+        </a>
+        {% endif %}
+
+      </div>
+    </div>
+    {% empty %}
+    <p class="text-gray-600 dark:text-gray-300 col-span-full">No products available.</p>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}

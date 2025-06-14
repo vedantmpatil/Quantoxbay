@@ -1,0 +1,48 @@
+{% extends "myapp/base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="min-h-screen flex items-center justify-center bg-gradient-to-br from-emerald-50 to-indigo-100 dark:from-gray-800 dark:to-gray-900 px-6 py-12">
+  <div class="bg-white dark:bg-gray-900 shadow-2xl rounded-3xl max-w-2xl w-full p-8 text-center ring-1 ring-gray-200 dark:ring-gray-700">
+
+    <!-- Success Icon -->
+    <div class="mb-6">
+      <svg class="mx-auto w-16 h-16 text-emerald-500" fill="none" stroke="currentColor" stroke-width="2"
+           viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M5 13l4 4L19 7" />
+      </svg>
+    </div>
+
+    <!-- Heading -->
+    <h2 class="text-2xl sm:text-3xl font-bold text-gray-800 dark:text-white mb-2">
+      Payment Successful!
+    </h2>
+    <p class="text-gray-600 dark:text-gray-300 mb-6">
+      Thank you for your purchase. Your download is ready below.
+    </p>
+
+    <!-- Product Title -->
+    <div class="text-lg font-semibold text-indigo-600 dark:text-indigo-400 mb-4">
+      {{ order.product.title }}
+    </div>
+
+    <!-- Download Button -->
+    <a href="{{ order.product.file.url }}" download
+       class="inline-flex items-center justify-center bg-emerald-600 hover:bg-emerald-700 text-white font-medium px-6 py-3 rounded-xl shadow transition duration-200">
+      <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" stroke-width="2"
+           viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M4 4v16h16V4H4zm4 8h8M12 16V8" />
+      </svg>
+      Download Your File
+    </a>
+
+    <!-- Go Home -->
+    <div class="mt-8">
+      <a href="{% url 'index' %}"
+         class="text-sm text-indigo-600 dark:text-indigo-400 hover:underline font-medium">
+        ← Back to Home
+      </a>
+    </div>
+  </div>
+</div>
+{% endblock %}

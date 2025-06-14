@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en" class="transition-colors duration-300">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <title>Quantox Bay</title>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: '#4f46e5',
+          },
+        },
+      },
+    };
+  </script>
+</head>
+
+<body class="bg-gray-50 text-gray-800 transition-colors duration-300">
+
+  <!-- Navbar -->
+  <nav class="bg-white/80 backdrop-blur-md shadow-sm sticky top-0 z-50 transition-all duration-300">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between h-16 items-center">
+
+        <!-- Logo -->
+        <a href="{% url 'index' %}" class="flex items-center space-x-3 hover:opacity-90 transition">
+          <img src="https://img.icons8.com/ios-filled/24/000000/shop.png" alt="Logo" class="h-6 w-6" />
+          <span class="text-xl sm:text-2xl font-semibold tracking-wide text-gray-900">Quantox Bay</span>
+        </a>
+
+        <!-- Desktop Nav -->
+        <div class="hidden md:flex md:items-center md:space-x-6">
+          <a href="{% url 'index' %}" class="flex items-center space-x-2 hover:text-primary transition text-sm font-medium">
+            <img src="https://img.icons8.com/ios-filled/20/000000/compass.png" />
+            <span>Explore</span>
+          </a>
+          <a href="{% url 'dashboard' %}" class="flex items-center space-x-2 hover:text-primary transition text-sm font-medium">
+            <img src="https://img.icons8.com/ios-filled/20/000000/grid.png" />
+            <span>Dashboard</span>
+          </a>
+          <a href="{% url 'sales_analytics' %}" class="flex items-center space-x-2 hover:text-primary transition text-sm font-medium">
+            <img src="https://img.icons8.com/ios-filled/20/000000/sales-performance.png" />
+            <span>Sales</span>
+          </a>
+          <a href="{% url 'order_list' %}" class="flex items-center space-x-2 hover:text-primary transition text-sm font-medium">
+            <img src="https://img.icons8.com/ios-filled/20/000000/purchase-order.png" />
+            <span>Orders</span>
+          </a>
+          <a href="{% url 'create_product' %}" class="flex items-center space-x-2 hover:text-primary transition text-sm font-medium">
+            <img src="https://img.icons8.com/ios-filled/20/000000/add-shopping-cart.png" />
+            <span>Create Products</span>
+          </a>
+          <a href="{% url 'my_purchases' %}" class="flex items-center space-x-2 hover:text-primary transition text-sm font-medium">
+            <img src="https://img.icons8.com/ios-filled/20/000000/shopping-bag.png" />
+            <span>My Purchases</span>
+          </a>
+
+          {% if user.is_authenticated %}
+          <a href="{% url 'logout' %}" class="flex items-center space-x-2 text-red-600 hover:text-red-700 transition font-medium">
+            <img src="https://img.icons8.com/ios-filled/20/000000/logout-rounded-up.png" />
+            <span>Logout</span>
+          </a>
+          {% else %}
+          <a href="{% url 'login' %}" class="text-blue-600 hover:underline font-medium">Login</a>
+          <a href="{% url 'register' %}" class="text-blue-600 hover:underline font-medium">Register</a>
+          {% endif %}
+        </div>
+
+        <!-- Mobile Toggle Button -->
+        <button id="menu-toggle" class="md:hidden text-gray-700 focus:outline-none">
+          <svg class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"
+            stroke-linecap="round" stroke-linejoin="round">
+            <path d="M4 6h16M4 12h16M4 18h16" />
+          </svg>
+        </button>
+      </div>
+
+      <!-- Mobile Nav -->
+      <div id="mobile-menu" class="md:hidden hidden mt-3 space-y-2 pb-4 transition-all duration-300">
+        <a href="{% url 'dashboard' %}" class="flex items-center space-x-2 px-3 py-2 rounded hover:bg-gray-100 text-sm">
+          <img src="https://img.icons8.com/ios-filled/20/000000/grid.png" />
+          <span>Dashboard</span>
+        </a>
+        <a href="{% url 'sales_analytics' %}" class="flex items-center space-x-2 px-3 py-2 rounded hover:bg-gray-100 text-sm">
+          <img src="https://img.icons8.com/ios-filled/20/000000/sales-performance.png" />
+          <span>Sales</span>
+        </a>
+        <a href="{% url 'order_list' %}" class="flex items-center space-x-2 px-3 py-2 rounded hover:bg-gray-100 text-sm">
+          <img src="https://img.icons8.com/ios-filled/20/000000/purchase-order.png" />
+          <span>Orders</span>
+        </a>
+        <a href="{% url 'create_product' %}" class="flex items-center space-x-2 px-3 py-2 rounded hover:bg-gray-100 text-sm">
+          <img src="https://img.icons8.com/ios-filled/20/000000/add-shopping-cart.png" />
+          <span>Create Products</span>
+        </a>
+        <a href="{% url 'my_purchases' %}" class="flex items-center space-x-2 px-3 py-2 rounded hover:bg-gray-100 text-sm">
+          <img src="https://img.icons8.com/ios-filled/20/000000/shopping-bag.png" />
+          <span>My Purchases</span>
+        </a>
+
+        {% if user.is_authenticated %}
+        <a href="{% url 'logout' %}" class="flex items-center space-x-2 px-3 py-2 text-red-600 hover:bg-red-100 rounded text-sm font-medium">
+          <img src="https://img.icons8.com/ios-filled/20/000000/logout-rounded-up.png" />
+          <span>Logout</span>
+        </a>
+        {% else %}
+        <a href="{% url 'login' %}" class="block px-3 py-2 text-blue-600 hover:underline text-sm">Login</a>
+        <a href="{% url 'register' %}" class="block px-3 py-2 text-blue-600 hover:underline text-sm">Register</a>
+        {% endif %}
+      </div>
+    </div>
+  </nav>
+
+  <!-- Page Content -->
+  {% block content %}{% endblock %}
+
+  <!-- Mobile Menu Script -->
+  <script>
+    const menuToggle = document.getElementById('menu-toggle');
+    const mobileMenu = document.getElementById('mobile-menu');
+    menuToggle.addEventListener('click', () => {
+      mobileMenu.classList.toggle('hidden');
+    });
+  </script>
+
+</body>
+</html>

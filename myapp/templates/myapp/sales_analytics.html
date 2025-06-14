@@ -1,0 +1,68 @@
+{% extends 'myapp/base.html' %}
+{% load static %}
+{% block content %}
+
+<div class="max-w-4xl mx-auto px-6 py-8">
+  <h1 class="text-3xl font-bold mb-6">Sales Analytics</h1>
+
+  <form method="get" class="flex gap-4 mb-6">
+    <input type="date" name="start_date" value="{{ start_date }}" class="px-3 py-2 border rounded">
+    <input type="date" name="end_date" value="{{ end_date }}" class="px-3 py-2 border rounded">
+    <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded">Filter</button>
+  </form>
+
+  <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-8">
+    <div class="bg-white p-4 rounded shadow text-center">
+      <p class="text-gray-600">Total Orders</p>
+      <p class="text-2xl font-bold">{{ total_orders }}</p>
+    </div>
+    <div class="bg-white p-4 rounded shadow text-center">
+      <p class="text-gray-600">Total Revenue</p>
+      <p class="text-2xl font-bold">${{ total_revenue }}</p>
+    </div>
+  </div>
+
+  <div class="bg-white p-6 rounded-lg shadow">
+    <canvas id="salesChart"></canvas>
+  </div>
+</div>
+
+<!-- Pass JSON safely -->
+{{ labels|json_script:"labels-data" }}
+{{ data|json_script:"sales-data" }}
+
+<!-- Chart.js CDN -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+  const labels = JSON.parse(document.getElementById('labels-data').textContent);
+  const data = JSON.parse(document.getElementById('sales-data').textContent);
+
+  const ctx = document.getElementById('salesChart').getContext('2d');
+  new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: labels,
+      datasets: [{
+        label: 'Daily Sales ($)',
+        data: data,
+        fill: true,
+        backgroundColor: 'rgba(59, 130, 246, 0.2)',
+        borderColor: 'rgba(59, 130, 246, 1)',
+        tension: 0.3,
+      }]
+    },
+    options: {
+      responsive: true,
+      scales: {
+        x: {
+          title: { display: true, text: 'Date' }
+        },
+        y: {
+          beginAtZero: true,
+          title: { display: true, text: 'Revenue ($)' }
+        }
+      }
+    }
+  });
+</script>
+{% endblock %}

@@ -1,0 +1,68 @@
+{% extends 'myapp/base.html' %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+  <h1 class="text-3xl font-bold text-gray-800 mb-8">My Dashboard</h1>
+
+  <!-- Summary Cards -->
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
+    <div class="bg-white p-6 rounded-xl shadow border">
+      <p class="text-gray-500 text-sm">Total Products</p>
+      <p class="text-2xl font-bold">{{ products|length }}</p>
+    </div>
+    <div class="bg-white p-6 rounded-xl shadow border">
+      <p class="text-gray-500 text-sm">Total Sales</p>
+      <p class="text-2xl font-bold">{{ total_sales }}</p>
+    </div>
+    <div class="bg-white p-6 rounded-xl shadow border">
+      <p class="text-gray-500 text-sm">Total Revenue</p>
+      <p class="text-2xl font-bold">$ {{ total_revenue }}</p>
+    </div>
+  </div>
+
+  <!-- Product Table -->
+  <div class="bg-white rounded-xl shadow overflow-hidden">
+    <table class="min-w-full text-sm">
+      <thead class="bg-gray-100">
+        <tr>
+          <th class="px-6 py-4 text-left font-semibold text-gray-600">Thumbnail</th>
+          <th class="px-6 py-4 text-left font-semibold text-gray-600">Title</th>
+          <th class="px-6 py-4 text-left font-semibold text-gray-600">File Type</th>
+          <th class="px-6 py-4 text-left font-semibold text-gray-600">Price</th>
+          <th class="px-6 py-4 text-left font-semibold text-gray-600">Sales</th>
+          <th class="px-6 py-4 text-left font-semibold text-gray-600">Revenue</th>
+          <th class="px-6 py-4 text-left font-semibold text-gray-600">Created At</th>
+          <th class="px-6 py-4 text-left font-semibold text-gray-600">Updated At</th>
+          <th class="px-6 py-4 text-left font-semibold text-gray-600">Actions</th>
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-gray-200">
+        {% for product in products %}
+        <tr>
+          <td class="px-6 py-4">
+            {% if product.thumbnail %}
+              <img src="{{ product.thumbnail.url }}" alt="{{ product.title }}" class="h-12 w-12 object-cover rounded">
+            {% else %}
+              <div class="h-12 w-12 bg-gray-200 rounded flex items-center justify-center text-xs text-gray-500">
+                N/A
+              </div>
+            {% endif %}
+          </td>
+          <td class="px-6 py-4">{{ product.title }}</td>
+          <td class="px-6 py-4">{{ product.file_type }}</td>
+          <td class="px-6 py-4">${{ product.discount_price }}</td>
+          <td class="px-6 py-4">{{ product.total_sales_count }}</td>
+          <td class="px-6 py-4">${{ product.total_sales_amount }}</td>
+          <td class="px-6 py-4">{{ product.created_at|date:"M d, Y" }}</td>
+          <td class="px-6 py-4">{{ product.updated_at|date:"M d, Y" }}</td>
+          <td class="px-6 py-4 space-x-2">
+            <a href="{% url 'edit_product' product.id %}" class="px-3 py-1 bg-blue-500 text-white text-xs rounded hover:bg-blue-600">Edit</a>
+            <a href="{% url 'delete_product' product.id %}" class="px-3 py-1 bg-red-500 text-white text-xs rounded hover:bg-red-600">Delete</a>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}
