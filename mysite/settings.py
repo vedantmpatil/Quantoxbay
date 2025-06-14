@@ -139,3 +139,6 @@ TIME_ZONE = 'Asia/Kolkata'
 LOGIN_URL = 'login'
 LOGIN_REDIRECT_URL = 'index'
 
+ALLOWED_HOSTS = ['quantoxbay.onrender.com', '127.0.0.1', 'localhost']
+
+
