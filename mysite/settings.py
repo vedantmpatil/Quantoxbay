@@ -158,9 +158,10 @@ ALLOWED_HOSTS = ['quantoxbay.onrender.com', '127.0.0.1', 'localhost']
 DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 
 CLOUDINARY_STORAGE = {
-    'CLOUD_NAME': 'dxwgin8hu',
-    'API_KEY': '991497952624717',
-    'API_SECRET': 'M8QXXpUElLUE0z-jZtcZKdtoC4k',
+    'CLOUD_NAME': os.environ.get('CLOUDINARY_CLOUD_NAME'),
+    'API_KEY': os.environ.get('CLOUDINARY_API_KEY'),
+    'API_SECRET': os.environ.get('CLOUDINARY_API_SECRET'),
 }
+
 
 
