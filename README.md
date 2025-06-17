@@ -182,24 +182,6 @@ https://res.cloudinary.com/<cloud_name>/image/upload/...
 
 ---
 
-## 📸 Screenshots
-
-> 🖼️ Place your screenshots here:
-
-1. Seller Dashboard
-2. Stripe Checkout Flow
-3. Sales Analytics Charts
-4. Mobile View Interface
-
-(You can use Markdown image tags like `![Screenshot](link.png)` to insert images)
-
----
-
-## 📜 License
-
-This project is licensed under the MIT License. Feel free to use, modify, and share!
-
----
 
 ## 🤝 Acknowledgments
 
