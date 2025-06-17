@@ -37,6 +37,8 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'cloudinary',
+    'cloudinary_storage',
     'myapp',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -127,6 +129,8 @@ USE_I18N = True
 USE_TZ = True
 
 
+
+
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 import os
@@ -148,5 +152,15 @@ LOGIN_URL = 'login'
 LOGIN_REDIRECT_URL = 'index'
 
 ALLOWED_HOSTS = ['quantoxbay.onrender.com', '127.0.0.1', 'localhost']
+
+
+# Cloudinary settings
+DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+
+CLOUDINARY_STORAGE = {
+    'CLOUD_NAME': 'dxwgin8hu',
+    'API_KEY': '991497952624717',
+    'API_SECRET': 'M8QXXpUElLUE0z-jZtcZKdtoC4k',
+}
 
 

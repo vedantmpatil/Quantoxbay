@@ -123,6 +123,10 @@ def create_product(request):
             new_product = product_form.save(commit=False)
             new_product.seller = request.user
             new_product.save()
+            print("📦 FILE URL:", new_product.file.url)
+            print("📦 THUMBNAIL URL:", new_product.thumbnail.url)
+            print("📦 STORAGE BACKEND:", new_product.file.storage.__class__)
+
             return redirect("index")
 
     product_form = ProductForm()

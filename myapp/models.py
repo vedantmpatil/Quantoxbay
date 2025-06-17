@@ -1,5 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import User
+from cloudinary_storage.storage import MediaCloudinaryStorage
+
+
 
 class Product(models.Model):
 
@@ -11,11 +14,11 @@ class Product(models.Model):
     price = models.DecimalField(max_digits=10, decimal_places=2)
     discount_price = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
 
-    file = models.FileField(upload_to='uploads/products/')
+    file = models.FileField(upload_to='uploads/products/',storage=MediaCloudinaryStorage())
     file_size = models.CharField(max_length=20, blank=True)
     file_type = models.CharField(max_length=50, blank=True)
     
-    thumbnail = models.ImageField(upload_to='uploads/thumbnails/', null=True, blank=True)
+    thumbnail = models.ImageField(upload_to='uploads/thumbnails/',storage=MediaCloudinaryStorage(), null=True, blank=True)
     preview_url = models.URLField(blank=True)
 
     tags = models.CharField(max_length=200, blank=True)
@@ -27,10 +30,18 @@ class Product(models.Model):
     total_sales_amount = models.IntegerField(default=0)
 
     def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+
         if self.file:
             self.file_size = f"{round(self.file.size / 1024, 2)} KB"
             self.file_type = self.file.name.split('.')[-1].lower()
-        super().save(*args, **kwargs)
+            # Save again with updated metadata
+            super().save(update_fields=['file_size', 'file_type'])
+
+            # Debug print
+            print("📦 File storage backend:", self.file.storage)
+            print("📦 File URL:", self.file.url)
+
 
     def __str__(self):
         return self.title
